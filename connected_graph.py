@@ -22,6 +22,13 @@ class Node(object):
         #Check direct connections
         if target in self.edges:
             return True
+        #Check indirect connections
+        elif self.edges:
+            connections = []
+            for edge in self.edges:
+                connected = Node.connected_to(edge, target)
+                connections.append(connected)
+            return any(connections)
         #Check if Node equals itself because it's theorectically connected
         elif Node.__eq__(self, target):
             return True
