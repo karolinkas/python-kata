@@ -1,16 +1,5 @@
 class Node(object):
 
-    """Find if two nodes in a directed graph are connected.
-    Based on http://www.codewars.com/kata/53897d3187c26d42ac00040d
-    For example:
-    a -+-> b -> c -> e
-    |
-    +-> d
-    a.connected_to(a) == true
-    a.connected_to(b) == true
-    a.connected_to(c) == true
-    b.connected_to(d) == false"""
-
     def __init__(self, value, edges=None):
         #This is describing the Node itself
         self.value = value
@@ -18,16 +7,25 @@ class Node(object):
         self.edges = edges or []
 
     def connected_to(self, target):
-        # TODO: check if target is defined
+        #Create a dictionary to store all nodes/stops we have already
+        #been to avoid going through one stop twice
+        beenThere = {}
+
+        if target is None:
+            print("error");
         #Check direct connections
         if target in self.edges:
+            beenThere[vars(target)['value']] = True;
             return True
         #Check indirect connections
         elif self.edges:
             connections = []
             for edge in self.edges:
-                connected = Node.connected_to(edge, target)
-                connections.append(connected)
+                currentEdgeValue = vars(edge)['value']
+                #Check if edges allow any further connections and if you have already been there
+                targetConnected = Node.connected_to(edge, target) and not beenThere.get(currentEdgeValue, False)
+                connections = targetConnected
+                connections.append(connections)
             return any(connections)
         #Check if Node equals itself because it's theorectically connected
         elif Node.__eq__(self, target):
